@@ -1,0 +1,50 @@
+## Electricity Generation Forecast 2020 - 2050 for Canada by Resource type
+
+##### [Abhinav Parbhakar](https://www.linkedin.com/in/abhinav-parbhakar-51b5a024a/)
+
+We see the topic of climate change and global warming everywhere we look, coupled with buzzwords thrown around by politicians to get votes. 
+
+I believe that the benefits behind the shift towards using renewable primary fuel for electricity generation can be analyzed by looking at the graph of Canada's
+projected [electricity generation, under the Evolving Policies case](https://apps.cer-rec.gc.ca/ftrppndc/dflt.aspx?GoCTemplateCulture=en-CA), the case which assumes that action to reduce the GHG emssions by Canada's energy sector will continue to [increase](https://www.cer-rec.gc.ca/en/data-analysis/canada-energy-future/2021/scenarios-and-assumptions.html#scenario-premise).
+
+The reason for which this graph should be considered timely is simple - many politicians will advertise themselves as *enviroment-friendly* candidates and will use the Evolving Policies case as the underlying backbone of this claim. 
+
+What this graph will do for **YOU**, is display the projections for the next 30 years, given this scenario, just in time to provide valuable information before the upcoming election cycles, no matter what political belief you hold. 
+
+
+```{r packages-data,echo=F,output=F, warning=FALSE,include=F}
+#load your packages quietly
+library(kableExtra)
+library(readxl)
+library(janitor)
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(viridis)
+
+knitr::opts_chunk$set(echo=FALSE)
+```
+
+
+```{r chunk title,warning=FALSE,message=FALSE, fig.width=12, dpi=200,fig.height=8, include=TRUE}
+data = read_excel(path="Electricity_Generation.xlsx",skip = 7, n_max = 9)
+colnames(data)[1] = "Type"
+
+data = data %>% pivot_longer(-Type,names_to = "Years",values_to = "generation")
+data = data %>% filter(Years >= 2020)
+data$Type = gsub(" & Coke","",data$Type)
+
+data %>%
+  ggplot()+
+  ggtitle("Electricity Generation Forecast 2020 - 2050 for Canada by Resource type",subtitle = "Under the Evolving Policies case, the use of coal as a primary resouce decreases heavily")+
+  geom_area(aes(Years,generation,group=Type,fill=Type),position="stack", color="black",linewidth=0.5)+
+  ylab("Electricity Generation (GWh)")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme(legend.position = "bottom")+
+  labs(caption = "Data from Canada Energy Regulator")
+
+```
+
+#### About the author
+
+I am a 3rd year student pursuing a BSc in Computing Science with an interest in Economics. My interests including cooking, rock-climbing, going to the gym, and developing websites.  
